@@ -274,6 +274,10 @@ public class MainActivity extends AppCompatActivity implements
             });
         }
 
+        @Override
+        public void onPreviewFrame(byte[] data) {
+            Log.d(TAG, "onPreviewFrame");
+        }
     };
 
     public static class ConfirmationDialogFragment extends DialogFragment {

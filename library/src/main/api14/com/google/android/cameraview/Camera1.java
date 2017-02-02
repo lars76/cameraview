@@ -67,6 +67,16 @@ class Camera1 extends CameraViewImpl {
 
     private int mDisplayOrientation;
 
+    private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
+        @Override
+        public void onPreviewFrame(byte[] data, Camera camera) {
+            if (data == null || camera == null) {
+                return;
+            }
+            mCallback.onPreviewFrame(data);
+        }
+    };
+
     Camera1(Callback callback, PreviewImpl preview) {
         super(callback, preview);
         preview.setCallback(new PreviewImpl.Callback() {
@@ -117,6 +127,7 @@ class Camera1 extends CameraViewImpl {
             } else {
                 mCamera.setPreviewTexture((SurfaceTexture) mPreview.getSurfaceTexture());
             }
+            mCamera.setPreviewCallback(previewCallback);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
