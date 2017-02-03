@@ -156,6 +156,12 @@ class Camera1 extends CameraViewImpl {
     }
 
     @Override
+    public Size getPreviewSize() {
+        final Camera.Size size = mCameraParameters.getPreviewSize();
+        return new Size(size.width, size.height);
+    }
+
+    @Override
     Set<AspectRatio> getSupportedAspectRatios() {
         return mPreviewSizes.ratios();
     }

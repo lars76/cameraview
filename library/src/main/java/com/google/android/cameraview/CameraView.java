@@ -317,6 +317,15 @@ public class CameraView extends FrameLayout {
     }
 
     /**
+     * Gets the size of the preview.
+     *
+     * @return The preview size.
+     */
+    public Size getPreviewSize() {
+        return mImpl.getPreviewSize();
+    }
+
+    /**
      * Gets all the aspect ratios supported by the current camera.
      */
     public Set<AspectRatio> getSupportedAspectRatios() {
