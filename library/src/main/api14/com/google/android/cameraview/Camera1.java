@@ -101,6 +101,7 @@ class Camera1 extends CameraViewImpl {
         }
         mShowingPreview = true;
         mCamera.startPreview();
+        mCamera.setPreviewCallback(previewCallback);
         return true;
     }
 
@@ -129,7 +130,6 @@ class Camera1 extends CameraViewImpl {
             } else {
                 mCamera.setPreviewTexture((SurfaceTexture) mPreview.getSurfaceTexture());
             }
-            mCamera.setPreviewCallback(previewCallback);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
