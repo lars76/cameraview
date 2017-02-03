@@ -69,10 +69,14 @@ class Camera1 extends CameraViewImpl {
 
     private int mDisplayOrientation;
 
+    /* workaround: skip first 10 callbacks to avoid seg faults */
+    private int firstRun = 0;
+
     private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            if (data == null || camera == null) {
+            if (data == null || camera == null || firstRun < 10) {
+                firstRun++;
                 return;
             }
             mCallback.onPreviewFrame(data);
