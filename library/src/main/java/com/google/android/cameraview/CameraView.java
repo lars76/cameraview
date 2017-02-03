@@ -37,6 +37,11 @@ import java.util.Set;
 
 public class CameraView extends FrameLayout {
 
+    public static final int INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY = 0;
+    public static final int INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED = 1;
+    public static final int INFO_SUPPORTED_HARDWARE_LEVEL_FULL = 2;
+    public static final int INFO_SUPPORTED_HARDWARE_LEVEL_3 = 3;
+
     /** The camera device faces the opposite direction as the device's screen. */
     public static final int FACING_BACK = Constants.FACING_BACK;
 
@@ -252,6 +257,13 @@ public class CameraView extends FrameLayout {
      */
     public boolean isCameraOpened() {
         return mImpl.isCameraOpened();
+    }
+
+    /**
+     * @return Supported hardware level of the camera currently being used.
+     */
+    public int getHardwareLevel() {
+        return mImpl.getHardwareLevel();
     }
 
     /**

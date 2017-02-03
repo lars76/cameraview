@@ -16,6 +16,8 @@
 
 package com.google.android.cameraview;
 
+import static com.google.android.cameraview.CameraView.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY;
+
 import android.annotation.SuppressLint;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -136,6 +138,11 @@ class Camera1 extends CameraViewImpl {
     @Override
     boolean isCameraOpened() {
         return mCamera != null;
+    }
+
+    @Override
+    int getHardwareLevel() {
+        return INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY;
     }
 
     @Override

@@ -237,6 +237,9 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void onCameraOpened(CameraView cameraView) {
             Log.d(TAG, "onCameraOpened");
+            if (cameraView.getHardwareLevel() < CameraView.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED) {
+                Log.d(TAG, "Device has hardware level LEGACY");
+            }
         }
 
         @Override

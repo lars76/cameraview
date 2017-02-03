@@ -16,6 +16,11 @@
 
 package com.google.android.cameraview;
 
+import static com.google.android.cameraview.CameraView.INFO_SUPPORTED_HARDWARE_LEVEL_3;
+import static com.google.android.cameraview.CameraView.INFO_SUPPORTED_HARDWARE_LEVEL_FULL;
+import static com.google.android.cameraview.CameraView.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY;
+import static com.google.android.cameraview.CameraView.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.ImageFormat;
@@ -199,6 +204,8 @@ class Camera2 extends CameraViewImpl {
     @Override
     boolean start() {
         if (!chooseCameraIdByFacing()) {
+            // Return false if level LEGACY
+            Log.w(TAG, "Device does not support Camera2. Falling back to Camera1.");
             return false;
         }
         collectCameraInfo();
@@ -226,6 +233,33 @@ class Camera2 extends CameraViewImpl {
     @Override
     boolean isCameraOpened() {
         return mCamera != null;
+    }
+
+    @Override
+    int getHardwareLevel() {
+        try {
+            CameraCharacteristics characteristics = mCameraManager.getCameraCharacteristics(
+                    mCameraId);
+            Integer level = characteristics.get(
+                    CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
+            if (level == null) {
+                throw new NullPointerException("Unexpected state: INFO_SUPPORTED_HARDWARE_LEVEL null");
+            }
+            switch (level) {
+                case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY:
+                    return INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY;
+                case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED:
+                    return INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED;
+                case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL:
+                    return INFO_SUPPORTED_HARDWARE_LEVEL_FULL;
+                case CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3:
+                    return INFO_SUPPORTED_HARDWARE_LEVEL_3;
+                default:
+                    throw new RuntimeException("Unknown hardware level " + level);
+            }
+        } catch (CameraAccessException e) {
+            throw new RuntimeException("Failed to get hardware level", e);
+        }
     }
 
     @Override
