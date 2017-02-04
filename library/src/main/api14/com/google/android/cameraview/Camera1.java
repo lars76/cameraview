@@ -69,14 +69,10 @@ class Camera1 extends CameraViewImpl {
 
     private int mDisplayOrientation;
 
-    /* workaround: skip first 10 callbacks to avoid seg faults */
-    private int firstRun = 0;
-
     private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            if (data == null || camera == null || firstRun < 10) {
-                firstRun++;
+            if (data == null || camera == null) {
                 return;
             }
             mCallback.onPreviewFrame(data);
@@ -91,6 +87,7 @@ class Camera1 extends CameraViewImpl {
                 if (mCamera != null) {
                     setUpPreview();
                     adjustCameraParameters();
+                    mCamera.setPreviewCallback(previewCallback);
                 }
             }
         });
@@ -105,7 +102,6 @@ class Camera1 extends CameraViewImpl {
         }
         mShowingPreview = true;
         mCamera.startPreview();
-        mCamera.setPreviewCallback(previewCallback);
         return true;
     }
 
