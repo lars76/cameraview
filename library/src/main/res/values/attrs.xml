@@ -54,5 +54,7 @@
             -->
             <enum name="redEye" value="4"/>
         </attr>
+        <!-- Force Camera1 -->
+        <attr name="forceCamera1" format="boolean"/>
     </declare-styleable>
 </resources>

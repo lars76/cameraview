@@ -116,6 +116,7 @@ public class CameraView extends FrameLayout {
         }
         setAutoFocus(a.getBoolean(R.styleable.CameraView_autoFocus, true));
         setFlash(a.getInt(R.styleable.CameraView_flash, Constants.FLASH_AUTO));
+        boolean forceCamera1 = a.getBoolean(R.styleable.CameraView_forceCamera1, false);
         a.recycle();
         // Display orientation detector
         mDisplayOrientationDetector = new DisplayOrientationDetector(context) {
@@ -124,6 +125,8 @@ public class CameraView extends FrameLayout {
                 mImpl.setDisplayOrientation(displayOrientation);
             }
         };
+        // force Camera1
+        mImpl = forceCamera1 ? new Camera1(mCallbacks, preview) : mImpl;
     }
 
     @NonNull
