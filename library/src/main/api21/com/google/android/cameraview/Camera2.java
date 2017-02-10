@@ -180,6 +180,8 @@ class Camera2 extends CameraViewImpl {
 
     private final SizeMap mPictureSizes = new SizeMap();
 
+    private Size mPictureSize;
+
     private int mFacing;
 
     private AspectRatio mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
@@ -202,12 +204,13 @@ class Camera2 extends CameraViewImpl {
     }
 
     @Override
-    boolean start() {
+    boolean start(Size pictureSize) {
         if (!chooseCameraIdByFacing()) {
             // Return false if level LEGACY
             Log.w(TAG, "Device does not support Camera2. Falling back to Camera1.");
             return false;
         }
+        mPictureSize = pictureSize;
         collectCameraInfo();
         prepareImageReader();
         startOpeningCamera();
@@ -270,7 +273,7 @@ class Camera2 extends CameraViewImpl {
         mFacing = facing;
         if (isCameraOpened()) {
             stop();
-            start();
+            start(mPictureSize);
         }
     }
 
@@ -287,6 +290,11 @@ class Camera2 extends CameraViewImpl {
     @Override
     Set<AspectRatio> getSupportedAspectRatios() {
         return mPreviewSizes.ratios();
+    }
+
+    @Override
+    public Set<Size> getSupportedPictureSizes() {
+        return mPictureSizes.sizes(mAspectRatio);
     }
 
     @Override
@@ -462,9 +470,14 @@ class Camera2 extends CameraViewImpl {
     }
 
     private void prepareImageReader() {
-        Size largest = mPictureSizes.sizes(mAspectRatio).last();
-        mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
-                ImageFormat.JPEG, /* maxImages */ 2);
+        if (mPictureSize != null) {
+            mImageReader = ImageReader.newInstance(mPictureSize.getWidth(), mPictureSize.getHeight(),
+                    ImageFormat.JPEG, /* maxImages */ 2);
+        } else {
+            Size largest = mPictureSizes.sizes(mAspectRatio).last();
+            mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
+                    ImageFormat.JPEG, /* maxImages */ 2);
+        }
         mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, null);
     }
 

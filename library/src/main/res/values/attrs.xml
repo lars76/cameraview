@@ -27,6 +27,8 @@
         </attr>
         <!-- Aspect ratio of camera preview and pictures. -->
         <attr name="aspectRatio" format="string"/>
+        <!-- Size of pictures. -->
+        <attr name="pictureSize" format="string"/>
         <!-- Continuous auto focus mode. -->
         <attr name="autoFocus" format="boolean"/>
         <!-- The flash mode. -->

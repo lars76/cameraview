@@ -38,7 +38,7 @@ abstract class CameraViewImpl {
     /**
      * @return {@code true} if the implementation was able to start the camera session.
      */
-    abstract boolean start();
+    abstract boolean start(Size pictureSize);
 
     abstract void stop();
 
@@ -53,6 +53,8 @@ abstract class CameraViewImpl {
     abstract Size getPreviewSize();
 
     abstract Set<AspectRatio> getSupportedAspectRatios();
+
+    abstract Set<Size> getSupportedPictureSizes();
 
     /**
      * @return {@code true} if the aspect ratio was changed.

@@ -82,6 +82,8 @@ public class CameraView extends FrameLayout {
 
     private final DisplayOrientationDetector mDisplayOrientationDetector;
 
+    private Size mPictureSize;
+
     public CameraView(Context context) {
         this(context, null);
     }
@@ -115,6 +117,12 @@ public class CameraView extends FrameLayout {
             setAspectRatio(AspectRatio.parse(aspectRatio));
         } else {
             setAspectRatio(Constants.DEFAULT_ASPECT_RATIO);
+        }
+        String pictureSize = a.getString(R.styleable.CameraView_pictureSize);
+        if (pictureSize != null) {
+            int width = Integer.parseInt(pictureSize.split("x")[0]);
+            int height = Integer.parseInt(pictureSize.split("x")[1]);
+            mPictureSize = new Size(width, height);
         }
         setAutoFocus(a.getBoolean(R.styleable.CameraView_autoFocus, true));
         setFlash(a.getInt(R.styleable.CameraView_flash, Constants.FLASH_AUTO));
@@ -236,13 +244,13 @@ public class CameraView extends FrameLayout {
      * {@link Activity#onResume()}.
      */
     public void start() {
-        if (!mImpl.start()) {
+        if (!mImpl.start(mPictureSize)) {
             //store the state ,and restore this state after fall back o Camera1
             Parcelable state=onSaveInstanceState();
             // Camera2 uses legacy hardware layer; fall back to Camera1
             mImpl = new Camera1(mCallbacks, createPreviewImpl(getContext()));
             onRestoreInstanceState(state);
-            mImpl.start();
+            mImpl.start(mPictureSize);
         }
     }
 
@@ -344,6 +352,13 @@ public class CameraView extends FrameLayout {
      */
     public Set<AspectRatio> getSupportedAspectRatios() {
         return mImpl.getSupportedAspectRatios();
+    }
+
+    /**
+     * Gets all the picture sizes supported by the current camera. Uses current aspect ratio.
+     */
+    public Set<Size> getSupportedPictureSizes() {
+        return mImpl.getSupportedPictureSizes();
     }
 
     /**

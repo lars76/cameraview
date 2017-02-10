@@ -57,6 +57,8 @@ class Camera1 extends CameraViewImpl {
 
     private final SizeMap mPictureSizes = new SizeMap();
 
+    private Size mPictureSize;
+
     private AspectRatio mAspectRatio;
 
     private boolean mShowingPreview;
@@ -94,7 +96,8 @@ class Camera1 extends CameraViewImpl {
     }
 
     @Override
-    boolean start() {
+    boolean start(Size pictureSize) {
+        mPictureSize = pictureSize;
         chooseCamera();
         openCamera();
         if (mPreview.isReady()) {
@@ -153,7 +156,7 @@ class Camera1 extends CameraViewImpl {
         mFacing = facing;
         if (isCameraOpened()) {
             stop();
-            start();
+            start(mPictureSize);
         }
     }
 
@@ -171,6 +174,11 @@ class Camera1 extends CameraViewImpl {
     @Override
     Set<AspectRatio> getSupportedAspectRatios() {
         return mPreviewSizes.ratios();
+    }
+
+    @Override
+    public Set<Size> getSupportedPictureSizes() {
+        return mPictureSizes.sizes(mAspectRatio);
     }
 
     @Override
@@ -347,7 +355,11 @@ class Camera1 extends CameraViewImpl {
                 mCamera.stopPreview();
             }
             mCameraParameters.setPreviewSize(size.getWidth(), size.getHeight());
-            mCameraParameters.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
+            if (mPictureSize != null) {
+                mCameraParameters.setPictureSize(mPictureSize.getWidth(), mPictureSize.getHeight());
+            } else {
+                mCameraParameters.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
+            }
             mCameraParameters.setRotation(calcCameraRotation(mDisplayOrientation));
             setAutoFocusInternal(mAutoFocus);
             setFlashInternal(mFlash);
